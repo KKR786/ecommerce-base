@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/utils/database";
-import {login} from "@/utils/lib/action"
+import { login } from "@/actions/auth";
 import jwt from  "jsonwebtoken";
 
 const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '30d' })
+    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '07d' })
   }
 
 export async function POST (req) {
