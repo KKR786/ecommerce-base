@@ -1,16 +1,29 @@
-import jwt from "jsonwebtoken";
+'use server'
+import { SignJWT, jwtVerify } from "jose";
 
-export const encodeToken = (_id) => {
-    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '7d' })
-}
+const encodedKey = new TextEncoder().encode(process.env.SECRET);
+
+export const encodeToken = async (info) => {
+  const token = await new SignJWT(info)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodedKey);
+
+    return token
+};
 
 export const decodeToken = async (token) => {
-    try {
-        if(token) {
-            const decodedToken = jwt.verify(token, process.env.SECRET);
-            return decodedToken._id;
-        }
-    } catch (err) {
-        //throw new Error(err.message);
+  try {
+    if (token) {
+      const decodedToken = await jwtVerify(token, encodedKey, {
+        algorithms: ["HS256"],
+      });
+      
+      return decodedToken.payload.info;
     }
-}
+  } catch (error) {
+    console.error("Error decoding token:", error.message);
+    throw new Error("Invalid token");
+  }
+};

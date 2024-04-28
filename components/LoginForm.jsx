@@ -11,12 +11,12 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const type = "admin";
+    const role = "admin";
 
     try {
       const res = await fetch("/api/users/auth/signin", {
         method: "POST",
-        body: JSON.stringify({ email, type, password }),
+        body: JSON.stringify({ email, role, password }),
         headers: {
           "Content-Type": "application/json",
         },
